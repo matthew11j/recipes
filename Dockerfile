@@ -1,7 +1,7 @@
 FROM python:3.12-alpine3.19
 
 #Install all dependencies.
-RUN apk add --no-cache postgresql-libs postgresql-client gettext zlib libjpeg libwebp libxml2-dev libxslt-dev openldap git
+RUN apk add --no-cache postgresql-libs postgresql-client gettext zlib libjpeg libwebp libxml2-dev libxslt-dev git
 
 #Print all logs without buffering it.
 ENV PYTHONUNBUFFERED 1
@@ -23,8 +23,7 @@ RUN \
     fi
 # remove Development dependencies from requirements.txt
 RUN sed -i '/# Development/,$d' requirements.txt
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev zlib-dev jpeg-dev libwebp-dev openssl-dev libffi-dev cargo openldap-dev python3-dev xmlsec-dev xmlsec build-base  && \
-    echo -n "INPUT ( libldap.so )" > /usr/lib/libldap_r.so && \
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev zlib-dev jpeg-dev libwebp-dev openssl-dev libffi-dev cargo python3-dev xmlsec-dev xmlsec build-base  && \
     python -m venv venv && \
     /opt/recipes/venv/bin/python -m pip install --upgrade pip && \
     venv/bin/pip install wheel==0.42.0 && \

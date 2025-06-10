@@ -16,7 +16,7 @@ jobs:
             - uses: actions/checkout@v4
             - uses: awalsh128/cache-apt-pkgs-action@v1.4.3
               with:
-                  packages: libsasl2-dev python3-dev libxml2-dev libxmlsec1-dev libxslt-dev libxmlsec1-openssl libldap2-dev libssl-dev gcc musl-dev postgresql-dev zlib-dev jpeg-dev libwebp-dev openssl-dev libffi-dev cargo openldap-dev python3-dev xmlsec-dev xmlsec build-base g++ curl
+                  packages: libsasl2-dev python3-dev libxml2-dev libxmlsec1-dev libxslt-dev libxmlsec1-openssl libssl-dev gcc musl-dev postgresql-dev zlib-dev jpeg-dev libwebp-dev openssl-dev libffi-dev cargo python3-dev xmlsec-dev xmlsec build-base g++ curl
                   version: 1.0
 
             # Setup python & dependencies
@@ -64,8 +64,8 @@ jobs:
             - name: Compile Django StaticFiles
               if: steps.django_cache.outputs.cache-hit != 'true'
               run: |
-                  python3 manage.py collectstatic --noinput
-                  python3 manage.py collectstatic_js_reverse
+                  python manage.py collectstatic --noinput
+                  python manage.py collectstatic_js_reverse
 
             - uses: actions/cache/save@v4
               if: steps.django_cache.outputs.cache-hit != 'true'

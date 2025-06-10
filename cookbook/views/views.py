@@ -40,8 +40,12 @@ def index(request):
             return HttpResponseRedirect(reverse_lazy('view_search'))
 
     try:
-        page_map = {UserPreference.SEARCH: reverse_lazy('view_search'), UserPreference.PLAN: reverse_lazy('view_plan'), UserPreference.BOOKS: reverse_lazy('view_books'),
-                    UserPreference.SHOPPING: reverse_lazy('view_shopping'), }
+        page_map = {
+            UserPreference.SEARCH: reverse_lazy('view_search'),
+            UserPreference.PLAN: reverse_lazy('view_plan'),
+            UserPreference.BOOKS: reverse_lazy('view_books'),
+            UserPreference.SHOPPING: reverse_lazy('view_shopping'),
+        }
 
         return HttpResponseRedirect(page_map.get(request.user.userpreference.default_page))
     except UserPreference.DoesNotExist:
@@ -50,7 +54,7 @@ def index(request):
 
 # TODO need to deprecate
 def search(request):
-    if has_group_permission(request.user, ('guest',)):
+    if has_group_permission(request.user, ('guest', )):
         return render(request, 'search.html', {})
     else:
         if request.user.is_authenticated:
@@ -73,23 +77,27 @@ def space_overview(request):
         else:
             if create_form.is_valid():
                 if Space.objects.filter(created_by=request.user).count() >= request.user.userpreference.max_owned_spaces:
-                    messages.add_message(request, messages.ERROR,
-                                         _('You have the reached the maximum amount of spaces that can be owned by you.') + f' ({request.user.userpreference.max_owned_spaces})')
+                    messages.add_message(
+                        request, messages.ERROR,
+                        _('You have the reached the maximum amount of spaces that can be owned by you.') + f' ({request.user.userpreference.max_owned_spaces})'
+                    )
                     return HttpResponseRedirect(reverse('view_space_overview'))
 
-                created_space = Space.objects.create(name=create_form.cleaned_data['name'],
-                                                     created_by=request.user,
-                                                     max_file_storage_mb=settings.SPACE_DEFAULT_MAX_FILES,
-                                                     max_recipes=settings.SPACE_DEFAULT_MAX_RECIPES,
-                                                     max_users=settings.SPACE_DEFAULT_MAX_USERS,
-                                                     allow_sharing=settings.SPACE_DEFAULT_ALLOW_SHARING,
-                                                     )
+                created_space = Space.objects.create(
+                    name=create_form.cleaned_data['name'],
+                    created_by=request.user,
+                    max_file_storage_mb=settings.SPACE_DEFAULT_MAX_FILES,
+                    max_recipes=settings.SPACE_DEFAULT_MAX_RECIPES,
+                    max_users=settings.SPACE_DEFAULT_MAX_USERS,
+                    allow_sharing=settings.SPACE_DEFAULT_ALLOW_SHARING,
+                )
 
                 user_space = UserSpace.objects.create(space=created_space, user=request.user, active=False)
                 user_space.groups.add(Group.objects.filter(name='admin').get())
 
-                messages.add_message(request, messages.SUCCESS,
-                                     _('You have successfully created your own recipe space. Start by adding some recipes or invite other people to join you.'))
+                messages.add_message(
+                    request, messages.SUCCESS, _('You have successfully created your own recipe space. Start by adding some recipes or invite other people to join you.')
+                )
                 return HttpResponseRedirect(reverse('view_switch_space', args=[user_space.space.pk]))
 
             if join_form.is_valid():
@@ -130,7 +138,7 @@ def recipe_view(request, pk, share=None):
             messages.add_message(request, messages.ERROR, _('You do not have the required permissions to view this page!'))
             return HttpResponseRedirect(reverse('account_login') + '?next=' + request.path)
 
-        if not (has_group_permission(request.user, ('guest',)) and recipe.space == request.space) and not share_link_valid(recipe, share):
+        if not (has_group_permission(request.user, ('guest', )) and recipe.space == request.space) and not share_link_valid(recipe, share):
             messages.add_message(request, messages.ERROR, _('You do not have the required permissions to view this page!'))
             return HttpResponseRedirect(reverse('index'))
 
@@ -215,8 +223,10 @@ def shopping_settings(request):
             if search_form.is_valid():
                 if not sp:
                     sp = SearchPreferenceForm(user=request.user)
-                fields_searched = (len(search_form.cleaned_data['icontains']) + len(search_form.cleaned_data['istartswith']) + len(search_form.cleaned_data['trigram'])
-                                   + len(search_form.cleaned_data['fulltext']))
+                fields_searched = (
+                    len(search_form.cleaned_data['icontains']) + len(search_form.cleaned_data['istartswith']) + len(search_form.cleaned_data['trigram']) +
+                    len(search_form.cleaned_data['fulltext'])
+                )
                 if search_form.cleaned_data['preset'] == 'fuzzy':
                     sp.search = SearchPreference.SIMPLE
                     sp.lookup = True
@@ -273,7 +283,9 @@ def shopping_settings(request):
         sp.fulltext.clear()
         sp.save()
 
-    return render(request, 'settings.html', {'search_form': search_form, })
+    return render(request, 'settings.html', {
+        'search_form': search_form,
+    })
 
 
 @group_required('guest')
@@ -316,7 +328,8 @@ def system(request):
     else:
         database_status = 'info'
         database_message = _(
-            'This application is not running with a Postgres database backend. This is ok but not recommended as some features only work with postgres databases.')
+            'This application is not running with a Postgres database backend. This is ok but not recommended as some features only work with postgres databases.'
+        )
 
     secret_key = False if os.getenv('SECRET_KEY') else True
 
@@ -388,10 +401,23 @@ def system(request):
 
     return render(
         request, 'system.html', {
-            'gunicorn_media': settings.GUNICORN_MEDIA, 'debug': settings.DEBUG, 'postgres': postgres, 'postgres_version': postgres_ver, 'postgres_status': database_status,
-            'postgres_message': database_message, 'version_info': VERSION_INFO, 'plugins': PLUGINS, 'secret_key': secret_key, 'orphans': orphans, 'migration_info': migration_info,
-            'missing_migration': missing_migration, 'allowed_hosts': settings.ALLOWED_HOSTS, 'api_stats': api_stats, 'api_space_stats': api_space_stats
-        })
+            'gunicorn_media': settings.GUNICORN_MEDIA,
+            'debug': settings.DEBUG,
+            'postgres': postgres,
+            'postgres_version': postgres_ver,
+            'postgres_status': database_status,
+            'postgres_message': database_message,
+            'version_info': VERSION_INFO,
+            'plugins': PLUGINS,
+            'secret_key': secret_key,
+            'orphans': orphans,
+            'migration_info': migration_info,
+            'missing_migration': missing_migration,
+            'allowed_hosts': settings.ALLOWED_HOSTS,
+            'api_stats': api_stats,
+            'api_space_stats': api_space_stats
+        }
+    )
 
 
 def setup(request):
@@ -399,9 +425,11 @@ def setup(request):
         if User.objects.count() > 0 or 'django.contrib.auth.backends.RemoteUserBackend' in settings.AUTHENTICATION_BACKENDS:
             messages.add_message(
                 request, messages.ERROR,
-                _('The setup page can only be used to create the first user! \
+                _(
+                    'The setup page can only be used to create the first user! \
                     If you have forgotten your superuser credentials please consult the django documentation on how to reset passwords.'
-                  ))
+                )
+            )
             return HttpResponseRedirect(reverse('account_login'))
 
         if request.method == 'POST':
@@ -483,24 +511,63 @@ def report_share_abuse(request, token):
 def web_manifest(request):
     theme_values = get_theming_values(request)
 
-    icons = [{"src": theme_values['logo_color_svg'], "sizes": "any"}, {"src": theme_values['logo_color_144'], "type": "image/png", "sizes": "144x144"},
-             {"src": theme_values['logo_color_512'], "type": "image/png", "sizes": "512x512"}]
+    icons = [{
+        "src": theme_values['logo_color_svg'],
+        "sizes": "any"
+    }, {
+        "src": theme_values['logo_color_144'],
+        "type": "image/png",
+        "sizes": "144x144"
+    }, {
+        "src": theme_values['logo_color_512'],
+        "type": "image/png",
+        "sizes": "512x512"
+    }]
 
     manifest_info = {
         "name":
-            theme_values['app_name'], "short_name":
-            theme_values['app_name'], "description":
-            _("Manage recipes, shopping list, meal plans and more."), "icons":
-            icons, "start_url":
-            "./", "background_color":
-            theme_values['nav_bg_color'], "display":
-            "standalone", "scope":
-            ".", "theme_color":
-            theme_values['nav_bg_color'], "shortcuts":
-            [{"name": _("Plan"), "short_name": _("Plan"), "description": _("View your meal Plan"), "url":
-                "./plan"}, {"name": _("Books"), "short_name": _("Books"), "description": _("View your cookbooks"), "url": "./books"},
-             {"name": _("Shopping"), "short_name": _("Shopping"), "description": _("View your shopping lists"), "url":
-                 "./shopping/"}], "share_target": {"action": "/data/import/url", "method": "GET", "params": {"title": "title", "url": "url", "text": "text"}}
+        theme_values['app_name'],
+        "short_name":
+        theme_values['app_name'],
+        "description":
+        _("Manage recipes, shopping list, meal plans and more."),
+        "icons":
+        icons,
+        "start_url":
+        "./",
+        "background_color":
+        theme_values['nav_bg_color'],
+        "display":
+        "standalone",
+        "scope":
+        ".",
+        "theme_color":
+        theme_values['nav_bg_color'],
+        "shortcuts": [{
+            "name": _("Plan"),
+            "short_name": _("Plan"),
+            "description": _("View your meal Plan"),
+            "url": "./plan"
+        }, {
+            "name": _("Books"),
+            "short_name": _("Books"),
+            "description": _("View your cookbooks"),
+            "url": "./books"
+        }, {
+            "name": _("Shopping"),
+            "short_name": _("Shopping"),
+            "description": _("View your shopping lists"),
+            "url": "./shopping/"
+        }],
+        "share_target": {
+            "action": "/data/import/url",
+            "method": "GET",
+            "params": {
+                "title": "title",
+                "url": "url",
+                "text": "text"
+            }
+        }
     }
 
     return JsonResponse(manifest_info, json_dumps_params={'indent': 4})

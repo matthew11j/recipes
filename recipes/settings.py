@@ -263,35 +263,35 @@ if ENABLE_METRICS:
 AUTHENTICATION_BACKENDS = []
 
 # LDAP
-LDAP_AUTH = bool(os.getenv('LDAP_AUTH', False))
-if LDAP_AUTH:
-    import ldap
-    from django_auth_ldap.config import LDAPSearch
+# LDAP_AUTH = bool(os.getenv('LDAP_AUTH', False))
+# if LDAP_AUTH:
+#     import ldap
+#     from django_auth_ldap.config import LDAPSearch
 
-    AUTHENTICATION_BACKENDS.append('django_auth_ldap.backend.LDAPBackend')
-    AUTH_LDAP_SERVER_URI = os.getenv('AUTH_LDAP_SERVER_URI')
-    AUTH_LDAP_START_TLS = bool(int(os.getenv('AUTH_LDAP_START_TLS', False)))
-    AUTH_LDAP_BIND_DN = os.getenv('AUTH_LDAP_BIND_DN')
-    AUTH_LDAP_BIND_PASSWORD = os.getenv('AUTH_LDAP_BIND_PASSWORD')
-    AUTH_LDAP_USER_SEARCH = LDAPSearch(
-        os.getenv('AUTH_LDAP_USER_SEARCH_BASE_DN'),
-        ldap.SCOPE_SUBTREE,
-        os.getenv('AUTH_LDAP_USER_SEARCH_FILTER_STR', '(uid=%(user)s)'),
-    )
-    AUTH_LDAP_USER_ATTR_MAP = ast.literal_eval(os.getenv('AUTH_LDAP_USER_ATTR_MAP')) if os.getenv('AUTH_LDAP_USER_ATTR_MAP') else {
-        'first_name': 'givenName',
-        'last_name': 'sn',
-        'email': 'mail',
-    }
-    AUTH_LDAP_ALWAYS_UPDATE_USER = bool(int(os.getenv('AUTH_LDAP_ALWAYS_UPDATE_USER', True)))
-    AUTH_LDAP_CACHE_TIMEOUT = int(os.getenv('AUTH_LDAP_CACHE_TIMEOUT', 3600))
-    if 'AUTH_LDAP_TLS_CACERTFILE' in os.environ:
-        AUTH_LDAP_GLOBAL_OPTIONS = {ldap.OPT_X_TLS_CACERTFILE: os.getenv('AUTH_LDAP_TLS_CACERTFILE')}
-    if DEBUG:
-        LOGGING["loggers"]["django_auth_ldap"] = {
-            "level": "DEBUG",
-            "handlers": ["console"]
-        }
+#     AUTHENTICATION_BACKENDS.append('django_auth_ldap.backend.LDAPBackend')
+#     AUTH_LDAP_SERVER_URI = os.getenv('AUTH_LDAP_SERVER_URI')
+#     AUTH_LDAP_START_TLS = bool(int(os.getenv('AUTH_LDAP_START_TLS', False)))
+#     AUTH_LDAP_BIND_DN = os.getenv('AUTH_LDAP_BIND_DN')
+#     AUTH_LDAP_BIND_PASSWORD = os.getenv('AUTH_LDAP_BIND_PASSWORD')
+#     AUTH_LDAP_USER_SEARCH = LDAPSearch(
+#         os.getenv('AUTH_LDAP_USER_SEARCH_BASE_DN'),
+#         ldap.SCOPE_SUBTREE,
+#         os.getenv('AUTH_LDAP_USER_SEARCH_FILTER_STR', '(uid=%(user)s)'),
+#     )
+#     AUTH_LDAP_USER_ATTR_MAP = ast.literal_eval(os.getenv('AUTH_LDAP_USER_ATTR_MAP')) if os.getenv('AUTH_LDAP_USER_ATTR_MAP') else {
+#         'first_name': 'givenName',
+#         'last_name': 'sn',
+#         'email': 'mail',
+#     }
+#     AUTH_LDAP_ALWAYS_UPDATE_USER = bool(int(os.getenv('AUTH_LDAP_ALWAYS_UPDATE_USER', True)))
+#     AUTH_LDAP_CACHE_TIMEOUT = int(os.getenv('AUTH_LDAP_CACHE_TIMEOUT', 3600))
+#     if 'AUTH_LDAP_TLS_CACERTFILE' in os.environ:
+#         AUTH_LDAP_GLOBAL_OPTIONS = {ldap.OPT_X_TLS_CACERTFILE: os.getenv('AUTH_LDAP_TLS_CACERTFILE')}
+#     if DEBUG:
+#         LOGGING["loggers"]["django_auth_ldap"] = {
+#             "level": "DEBUG",
+#             "handlers": ["console"]
+#         }
 
 AUTHENTICATION_BACKENDS += [
     'django.contrib.auth.backends.ModelBackend',

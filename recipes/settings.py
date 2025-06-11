@@ -27,8 +27,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Get vars from .env files
 SECRET_KEY = os.getenv('SECRET_KEY') if os.getenv('SECRET_KEY') else 'INSECURE_STANDARD_KEY_SET_IN_ENV'
 
-DEBUG = bool(int(os.getenv('DEBUG', '0')))
-DEBUG_TOOLBAR = bool(int(os.getenv('DEBUG_TOOLBAR', '0')))
+DEBUG = bool(int(os.getenv('DEBUG', '0'))) or True
+DEBUG_TOOLBAR = bool(int(os.getenv('DEBUG_TOOLBAR', '0'))) or True
 
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING")
 
@@ -129,9 +129,7 @@ REDIS_HOST = os.getenv('REDIS_HOST', None)
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 REDIS_USERNAME = os.getenv('REDIS_USERNAME', None)
 REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
-REDIS_DATABASES = {
-    'STATS': 0
-}
+REDIS_DATABASES = {'STATS': 0}
 
 MESSAGE_TAGS = {messages.ERROR: 'danger'}
 
@@ -246,14 +244,14 @@ MIDDLEWARE = [
 ]
 
 if DEBUG_TOOLBAR:
-    MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-    INSTALLED_APPS += ('debug_toolbar',)
+    MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware', )
+    INSTALLED_APPS += ('debug_toolbar', )
 
 SORT_TREE_BY_NAME = bool(int(os.getenv('SORT_TREE_BY_NAME', False)))
 DISABLE_TREE_FIX_STARTUP = bool(int(os.getenv('DISABLE_TREE_FIX_STARTUP', False)))
 
 if bool(int(os.getenv('SQL_DEBUG', False))):
-    MIDDLEWARE += ('recipes.middleware.SqlPrintingMiddleware',)
+    MIDDLEWARE += ('recipes.middleware.SqlPrintingMiddleware', )
 
 if ENABLE_METRICS:
     MIDDLEWARE += 'django_prometheus.middleware.PrometheusAfterMiddleware',
@@ -579,10 +577,7 @@ DISABLE_EXTERNAL_CONNECTORS = bool(int(os.getenv('DISABLE_EXTERNAL_CONNECTORS', 
 EXTERNAL_CONNECTORS_QUEUE_SIZE = int(os.getenv('EXTERNAL_CONNECTORS_QUEUE_SIZE', 100))
 
 # ACCOUNT_SIGNUP_FORM_CLASS = 'cookbook.forms.AllAuthSignupForm'
-ACCOUNT_FORMS = {
-    'signup': 'cookbook.forms.AllAuthSignupForm',
-    'reset_password': 'cookbook.forms.CustomPasswordResetForm'
-}
+ACCOUNT_FORMS = {'signup': 'cookbook.forms.AllAuthSignupForm', 'reset_password': 'cookbook.forms.CustomPasswordResetForm'}
 
 ACCOUNT_EMAIL_UNKNOWN_ACCOUNTS = False
 ACCOUNT_RATE_LIMITS = {

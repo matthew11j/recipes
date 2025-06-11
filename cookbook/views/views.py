@@ -5,6 +5,7 @@ from io import StringIO
 from uuid import UUID
 
 import redis
+import pprint
 from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
@@ -55,6 +56,8 @@ def index(request):
 # TODO need to deprecate
 def search(request):
     if has_group_permission(request.user, ('guest', )):
+        print(request)
+        pprint.pprint(request.__dict__)
         return render(request, 'search.html', {})
     else:
         if request.user.is_authenticated:

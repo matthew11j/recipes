@@ -32,8 +32,7 @@ def get_theming_values(request):
         UserPreference.TANDOOR: 'themes/tandoor.min.css',
         UserPreference.TANDOOR_DARK: 'themes/tandoor_dark.min.css',
     }
-    nav_text_type_mapping = {Space.DARK: 'navbar-light',
-                             Space.LIGHT: 'navbar-dark'}  # inverted since navbar-dark means the background
+    nav_text_type_mapping = {Space.DARK: 'navbar-light', Space.LIGHT: 'navbar-dark'}  # inverted since navbar-dark means the background
 
     tv = {
         'logo_color_32': static('assets/logo_color_32.png'),
@@ -44,9 +43,9 @@ def get_theming_values(request):
         'logo_color_512': static('assets/logo_color_512.png'),
         'logo_color_svg': static('assets/logo_color_svg.svg'),
         'custom_theme': None,
-        'theme': static(themes[UserPreference.TANDOOR]),
+        'theme': static(themes[UserPreference.TANDOOR_DARK]),
         'nav_logo': static('assets/brand_logo.png'),
-        'nav_bg_color': '#ddbf86',
+        'nav_bg_color': 'rgb(0,128,128)',
         'nav_text_class': 'navbar-light',
         'sticky_nav': 'position: sticky; top: 0; left: 0; z-index: 1000;',
         'app_name': 'Tandoor Recipes',

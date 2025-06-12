@@ -48,6 +48,7 @@ docs/reports/**
 # Django stuff:
 *.log
 mediafiles/
+*.sqlite3*
 staticfiles/
 postgresql/
 data/
